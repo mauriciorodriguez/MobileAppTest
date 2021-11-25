@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -13,6 +13,7 @@ import {
   Button,
   TextInput,
   ScrollView,
+  FlatList,
 } from "react-native";
 import Constants from "expo-constants";
 import logo from "./assets/logo.png";
@@ -22,11 +23,22 @@ import uploadToAnonymousFilesAsync from "anonymous-files";
 import * as SplashScreen from "expo-splash-screen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
+import axios from "axios";
+import VehicleService from "./services/vehicle.service";
 
 //SplashScreen.preventAutoHideAsync();
 //setTimeout(SplashScreen.hideAsync, 2000);
 
+const baseURL = "https://apitestdjango.herokuapp.com/api/";
 const statusBarHeight = Constants.statusBarHeight;
+
+const GoHome = (props) => {
+  return (
+    <View>
+      <Button title="Go Home" onPress={() => props.nav.navigate("Home")} />
+    </View>
+  );
+};
 
 const DeshabilitarBoton = (props) => {
   const [isDeshabilitado, setIsDeshabilitado] = useState(false);
@@ -54,6 +66,46 @@ const EntradaTexto = (props) => {
     </View>
   );
 };
+
+function VehicleScreen({ navigation }) {
+  const [vehicles, setVehicles] = useState([]);
+  // useEffect(() => {
+  //   axios.get(baseURL + "vehiculos/").then((response) => {
+  //     setVehicles(response.data);
+  //   });
+  // }, []);
+  useEffect(() => {
+    VehicleService.getAll().then((response) => {
+      setVehicles(response.data);
+    });
+  }, []);
+  if (vehicles == null) return <GoHome nav={navigation} />;
+  else
+    return (
+      <View>
+        <FlatList
+          data={vehicles}
+          keyExtractor={(item) => `${item.id}`}
+          renderItem={({ item }) => (
+            <View style={styles.vehiculos}>
+              <Text>ID: {item.id}</Text>
+              <Text>Fecha alta: {item.fecha_alta}</Text>
+              <Text>Fecha baja: {item.fecha_baja}</Text>
+              <Text>Color: {item.color}</Text>
+              <Text>Identificacion: {item.identificacion}</Text>
+              <Text>Kmts recorridos: {item.kms_recorridos_acumulados}</Text>
+            </View>
+          )}
+        />
+        {/* {vehicles.map((vehiculo) => (
+          <Text>
+            {vehiculo.identificacion} {vehiculo.color}
+          </Text>
+        ))} */}
+        <GoHome nav={navigation} />
+      </View>
+    );
+}
 
 function HomeScreen({ navigation }) {
   const [paramText, setParamText] = useState("");
@@ -89,6 +141,10 @@ function HomeScreen({ navigation }) {
         title="Go to Expo T."
         onPress={() => navigation.navigate("Expo")}
       />
+      <Button
+        title="Vehiculos"
+        onPress={() => navigation.navigate("Vehiculos")}
+      />
     </View>
   );
 }
@@ -99,7 +155,7 @@ function DetailsScreen({ navigation, route }) {
     <View style={styles.container}>
       <Text>Details Screen</Text>
       <Text>Param text: {JSON.stringify(text)}</Text>
-      <Button title="Go Back" onPress={() => navigation.goBack()} />
+      <GoHome nav={navigation} />
     </View>
   );
 }
@@ -113,6 +169,7 @@ function App() {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="Expo" component={TutorialExpo} />
+        <Stack.Screen name="Vehiculos" component={VehicleScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -193,7 +250,7 @@ function TutorialExpo({ navigation }) {
         <DeshabilitarBoton />
         <EntradaTexto />
         <StatusBar style="auto" />
-        <Button title="Go Back" onPress={() => navigation.goBack()} />
+        <GoHome nav={navigation} />
       </SafeAreaView>
     </ScrollView>
   );
@@ -241,5 +298,10 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
     resizeMode: "contain",
+  },
+  vehiculos: {
+    margin: 10,
+    padding: 10,
+    backgroundColor: "grey",
   },
 });

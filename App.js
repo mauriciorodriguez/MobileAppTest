@@ -14,6 +14,7 @@ import {
   TextInput,
   ScrollView,
   FlatList,
+  Dimensions,
 } from "react-native";
 import Constants from "expo-constants";
 import logo from "./assets/logo.png";
@@ -25,6 +26,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import axios from "axios";
 import VehicleService from "./services/vehicle.service";
+import MapView, { Callout, Marker } from "react-native-maps";
 
 //SplashScreen.preventAutoHideAsync();
 //setTimeout(SplashScreen.hideAsync, 2000);
@@ -67,6 +69,45 @@ const EntradaTexto = (props) => {
   );
 };
 
+function MapScreen({ navigation }) {
+  const [pin, setPin] = useState({ latitude: 37.78825, longitude: -122.4324 });
+  return (
+    <View style={styles.container}>
+      <Text>Latitude: {pin.latitude}</Text>
+      <Text>Longitude: {pin.longitude}</Text>
+      <Text></Text>
+      <MapView
+        style={styles.map}
+        initialRegion={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        provider="google"
+      >
+        <Marker
+          coordinate={pin}
+          draggable={true}
+          onDragStart={(e) =>
+            console.log("Drag start", e.nativeEvent.coordinate)
+          }
+          onDragEnd={(e) =>
+            setPin({
+              latitude: e.nativeEvent.coordinate.latitude,
+              longitude: e.nativeEvent.coordinate.longitude,
+            })
+          }
+        >
+          <Callout>
+            <Text>I'm here</Text>
+          </Callout>
+        </Marker>
+      </MapView>
+    </View>
+  );
+}
+
 function VehicleScreen({ navigation }) {
   const [vehicles, setVehicles] = useState([]);
   // useEffect(() => {
@@ -99,7 +140,7 @@ function VehicleScreen({ navigation }) {
         />
         {/* {vehicles.map((vehiculo) => (
           <Text>
-            {vehiculo.identificacion} {vehiculo.color}
+          {vehiculo.identificacion} {vehiculo.color}
           </Text>
         ))} */}
         <GoHome nav={navigation} />
@@ -145,6 +186,7 @@ function HomeScreen({ navigation }) {
         title="Vehiculos"
         onPress={() => navigation.navigate("Vehiculos")}
       />
+      <Button title="Go to MAP" onPress={() => navigation.navigate("Map")} />
     </View>
   );
 }
@@ -170,6 +212,7 @@ function App() {
         <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="Expo" component={TutorialExpo} />
         <Stack.Screen name="Vehiculos" component={VehicleScreen} />
+        <Stack.Screen name="Map" component={MapScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -303,5 +346,9 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     backgroundColor: "grey",
+  },
+  map: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
   },
 });

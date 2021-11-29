@@ -17,7 +17,7 @@ import {
   Dimensions,
 } from "react-native";
 import Constants from "expo-constants";
-import logo from "./assets/logo.png";
+import logo from "./src/assets/logo.png";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
 import uploadToAnonymousFilesAsync from "anonymous-files";
@@ -25,7 +25,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
 import axios from "axios";
-import VehicleService from "./services/vehicle.service";
+import VehicleService from "./src/api/vehicle.service";
 import MapView, { Callout, Marker } from "react-native-maps";
 
 //SplashScreen.preventAutoHideAsync();
@@ -123,7 +123,7 @@ function VehicleScreen({ navigation }) {
   if (vehicles == null) return <GoHome nav={navigation} />;
   else
     return (
-      <View>
+      <View style={{ flex: 1 }}>
         <FlatList
           data={vehicles}
           keyExtractor={(item) => `${item.id}`}

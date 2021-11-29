@@ -17,16 +17,16 @@ import {
   Dimensions,
 } from "react-native";
 import Constants from "expo-constants";
-import logo from "./src/assets/logo.png";
+import logo from "@assets/images/logo.png";
 import * as ImagePicker from "expo-image-picker";
 import * as Sharing from "expo-sharing";
 import uploadToAnonymousFilesAsync from "anonymous-files";
 import * as SplashScreen from "expo-splash-screen";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { NavigationContainer } from "@react-navigation/native";
-import axios from "axios";
-import VehicleService from "./src/api/vehicle.service";
-import MapView, { Callout, Marker } from "react-native-maps";
+import VehicleService from "@services/vehicle.service";
+import MapScreen from "@screens/map-screen";
+import { COLORS } from "@constants/styles";
 
 //SplashScreen.preventAutoHideAsync();
 //setTimeout(SplashScreen.hideAsync, 2000);
@@ -68,45 +68,6 @@ const EntradaTexto = (props) => {
     </View>
   );
 };
-
-function MapScreen({ navigation }) {
-  const [pin, setPin] = useState({ latitude: 37.78825, longitude: -122.4324 });
-  return (
-    <View style={styles.container}>
-      <Text>Latitude: {pin.latitude}</Text>
-      <Text>Longitude: {pin.longitude}</Text>
-      <Text></Text>
-      <MapView
-        style={styles.map}
-        initialRegion={{
-          latitude: 37.78825,
-          longitude: -122.4324,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        }}
-        provider="google"
-      >
-        <Marker
-          coordinate={pin}
-          draggable={true}
-          onDragStart={(e) =>
-            console.log("Drag start", e.nativeEvent.coordinate)
-          }
-          onDragEnd={(e) =>
-            setPin({
-              latitude: e.nativeEvent.coordinate.latitude,
-              longitude: e.nativeEvent.coordinate.longitude,
-            })
-          }
-        >
-          <Callout>
-            <Text>I'm here</Text>
-          </Callout>
-        </Marker>
-      </MapView>
-    </View>
-  );
-}
 
 function VehicleScreen({ navigation }) {
   const [vehicles, setVehicles] = useState([]);
@@ -328,7 +289,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   button: {
-    backgroundColor: "blue",
+    backgroundColor: COLORS.BLUE.DEEP_SKY_BLUE,
     padding: 20,
     margin: 20,
     borderRadius: 5,

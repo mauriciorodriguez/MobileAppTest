@@ -27,6 +27,8 @@ import { NavigationContainer } from "@react-navigation/native";
 import VehicleService from "@services/vehicle.service";
 import MapScreen from "@screens/map-screen";
 import { COLORS } from "@constants/styles";
+import IngresarScreen from "@screens/IngresarScreen";
+import LoginScreen from "@screens/LoginScreen";
 
 //SplashScreen.preventAutoHideAsync();
 //setTimeout(SplashScreen.hideAsync, 2000);
@@ -168,12 +170,14 @@ const Stack = createNativeStackNavigator();
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
         <Stack.Screen name="Expo" component={TutorialExpo} />
         <Stack.Screen name="Vehiculos" component={VehicleScreen} />
         <Stack.Screen name="Map" component={MapScreen} />
+        <Stack.Screen name="Ingresar" component={IngresarScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
